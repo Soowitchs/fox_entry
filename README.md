@@ -47,6 +47,14 @@ A REST API for product inventory management, built with NestJS, TypeORM, and Pos
 4. **API documentation:**
    - Visit [http://localhost:3000/api](http://localhost:3000/api) for Swagger UI and OpenAPI docs.
 
+## Docker
+
+To run the app and PostgreSQL in Docker:
+```bash
+docker-compose up --build
+```
+The API will be available at [http://localhost:3000](http://localhost:3000)
+
 ## API Endpoints
 
 ### Products
@@ -58,6 +66,23 @@ A REST API for product inventory management, built with NestJS, TypeORM, and Pos
 - `PUT /products/:id` — Update a product (tracks price changes)
 - `DELETE /products/:id` — Delete a product
 - `GET /products/:id/price-history` — Get price change history for a product
+
+## Development
+
+### Linting
+```bash
+npm run lint
+```
+
+### Testing
+```bash
+npm run test
+```
+
+### Code Coverage
+```bash
+npm run test:cov
+```
 
 ## Notes
 - No authentication or UI is included (API only)
