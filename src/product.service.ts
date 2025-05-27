@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { MoreThan } from 'typeorm';
+import { PriceHistory } from './price-history.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(PriceHistory)
+    private priceHistoryRepository: Repository<PriceHistory>,
   ) {}
 
   create(product: Partial<Product>) {
@@ -23,7 +26,16 @@ export class ProductService {
     return this.productRepository.findOneBy({ id });
   }
 
-  update(id: number, update: Partial<Product>) {
+  async update(id: number, update: Partial<Product>) {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) return null;
+    if (update.price !== undefined && update.price !== product.price) {
+      await this.priceHistoryRepository.save({
+        product,
+        oldPrice: product.price,
+        newPrice: update.price,
+      });
+    }
     return this.productRepository.update(id, update);
   }
 
@@ -37,5 +49,12 @@ export class ProductService {
 
   filterByStock(minStock: number) {
     return this.productRepository.find({ where: { stock: MoreThan(minStock) } });
+  }
+
+  async getPriceHistory(productId: number) {
+    return this.priceHistoryRepository.find({
+      where: { product: { id: productId } },
+      order: { changedAt: 'DESC' },
+    });
   }
 } 

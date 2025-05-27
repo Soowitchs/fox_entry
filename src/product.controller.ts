@@ -40,4 +40,9 @@ export class ProductController {
   remove(@Param('id') id: number) {
     return this.productService.remove(Number(id));
   }
+
+  @Get(':id/price-history')
+  getPriceHistory(@Param('id') id: number) {
+    return this.productService.getPriceHistory(Number(id));
+  }
 } 

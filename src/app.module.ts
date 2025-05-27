@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
+import { PriceHistory } from './price-history.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ProductController } from './product.controller';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product, PriceHistory]),
   ],
   controllers: [AppController, ProductController],
   providers: [AppService, ProductService],
