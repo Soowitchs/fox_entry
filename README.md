@@ -25,6 +25,45 @@
 
 A REST API for product inventory management, built with NestJS, TypeORM, and PostgreSQL.
 
+## Purpose
+This project provides a backend for managing products, their prices, and stock, including price history. It is suitable for small shops or as a learning project for RESTful API design.
+
+## Installation & Configuration
+1. Clone the repository.
+2. Copy `.env.example` to `.env` and adjust as needed.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. (Optional) Use Docker Compose for local development:
+   ```bash
+   docker-compose up --build
+   ```
+
+## Running
+- Locally: `npm run start`
+- In Docker: `docker-compose up --build`
+- API docs: [http://localhost:3000/api](http://localhost:3000/api)
+
+## Security
+- No authentication or authorization is implemented by default. For production, add JWT or OAuth2.
+- Input validation is recommended (see below).
+
+## Input Validation
+- Use `class-validator` and `class-transformer` in DTOs for validating incoming data. See NestJS docs for examples.
+
+## Environment Variables
+- See `.env.example` for all required variables.
+
+## CI/CD
+- Add a `.github/workflows/ci.yml` for GitHub Actions to automate tests and linting.
+
+## Logging & Monitoring
+- Integrate Winston or Sentry for advanced logging and error monitoring.
+
+## License
+MIT (see LICENSE file)
+
 ## Features
 - Product CRUD (create, read, update, delete)
 - Search products by name

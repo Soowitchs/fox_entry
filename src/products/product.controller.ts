@@ -10,13 +10,15 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() product: Partial<Product>) {
+  create(@Body() product: CreateProductDto) {
     return this.productService.create(product);
   }
 
@@ -41,7 +43,7 @@ export class ProductController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() update: Partial<Product>) {
+  update(@Param('id') id: number, @Body() update: UpdateProductDto) {
     return this.productService.update(Number(id), update);
   }
 
