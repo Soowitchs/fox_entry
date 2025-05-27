@@ -48,7 +48,9 @@ export class ProductService {
   }
 
   filterByStock(minStock: number) {
-    return this.productRepository.find({ where: { stock: MoreThan(minStock) } });
+    return this.productRepository.find({
+      where: { stock: MoreThan(minStock) },
+    });
   }
 
   async getPriceHistory(productId: number) {
@@ -57,4 +59,4 @@ export class ProductService {
       order: { changedAt: 'DESC' },
     });
   }
-} 
+}

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 
@@ -45,4 +54,4 @@ export class ProductController {
   getPriceHistory(@Param('id') id: number) {
     return this.productService.getPriceHistory(Number(id));
   }
-} 
+}
