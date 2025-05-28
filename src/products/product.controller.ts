@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
@@ -18,13 +19,13 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() product: CreateProductDto) {
-    return this.productService.create(product);
+  create(@Body() createProductDto: CreateProductDto) {
+    return this.productService.create(createProductDto);
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query('minPrice') minPrice?: number, @Query('maxPrice') maxPrice?: number, @Query('search') search?: string) {
+    return this.productService.findAll(minPrice, maxPrice, search);
   }
 
   @Get('search')
@@ -38,18 +39,18 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.productService.findOne(Number(id));
+  findOne(@Param('id') id: string) {
+    return this.productService.findOne(+id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() update: UpdateProductDto) {
-    return this.productService.update(Number(id), update);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(+id, updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.productService.remove(Number(id));
+  remove(@Param('id') id: string) {
+    return this.productService.remove(+id);
   }
 
   @Get(':id/price-history')

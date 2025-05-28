@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { MoreThan } from 'typeorm';
 import { PriceHistory } from './price-history.entity';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -14,33 +16,40 @@ export class ProductService {
     private priceHistoryRepository: Repository<PriceHistory>,
   ) {}
 
-  create(product: Partial<Product>) {
+  create(createProductDto: CreateProductDto): Promise<Product> {
+    const product = this.productRepository.create(createProductDto);
     return this.productRepository.save(product);
   }
 
-  findAll() {
-    return this.productRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.productRepository.findOneBy({ id });
-  }
-
-  async update(id: number, update: Partial<Product>) {
-    const product = await this.productRepository.findOneBy({ id });
-    if (!product) return null;
-    if (update.price !== undefined && update.price !== product.price) {
-      await this.priceHistoryRepository.save({
-        product,
-        oldPrice: product.price,
-        newPrice: update.price,
-      });
+  findAll(minPrice?: number, maxPrice?: number, search?: string): Promise<Product[]> {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    if (minPrice !== undefined) {
+      queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
     }
-    return this.productRepository.update(id, update);
+    if (maxPrice !== undefined) {
+      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+    if (search) {
+      queryBuilder.andWhere('product.name ILIKE :search', { search: `%${search}%` });
+    }
+    return queryBuilder.getMany();
   }
 
-  remove(id: number) {
-    return this.productRepository.delete(id);
+  async findOne(id: number): Promise<Product> {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+    return product;
+  }
+
+  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+    await this.productRepository.update(id, updateProductDto);
+    return this.findOne(id);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.productRepository.delete(id);
   }
 
   findByName(name: string) {

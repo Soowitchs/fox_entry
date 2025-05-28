@@ -1,4 +1,5 @@
-.PHONY: all
+.PHONY: all install build start dev test test-watch test-e2e test-cov lint format docker-build docker-up docker-down db-migrate db-revert clean help
+
 all: help
 
 # Development
@@ -18,13 +19,13 @@ dev:
 test:
 	npm run test
 
-test:watch:
+test-watch:
 	npm run test:watch
 
-test:e2e:
+test-e2e:
 	npm run test:e2e
 
-test:cov:
+test-cov:
 	npm run test:cov
 
 # Linting and Formatting
@@ -35,20 +36,20 @@ format:
 	npm run format
 
 # Docker
-docker:build:
+docker-build:
 	docker-compose build
 
-docker:up:
+docker-up:
 	docker-compose up -d
 
-docker:down:
+docker-down:
 	docker-compose down
 
 # Database
-db:migrate:
+db-migrate:
 	npm run typeorm migration:run
 
-db:revert:
+db-revert:
 	npm run typeorm migration:revert
 
 # Cleanup
@@ -65,15 +66,15 @@ help:
 	@echo "  make start        - Start the application"
 	@echo "  make dev          - Start the application in development mode"
 	@echo "  make test         - Run unit tests"
-	@echo "  make test:watch   - Run unit tests in watch mode"
-	@echo "  make test:e2e     - Run e2e tests"
-	@echo "  make test:cov     - Run tests with coverage"
+	@echo "  make test-watch   - Run unit tests in watch mode"
+	@echo "  make test-e2e     - Run e2e tests"
+	@echo "  make test-cov     - Run tests with coverage"
 	@echo "  make lint         - Run linter"
 	@echo "  make format       - Format code"
-	@echo "  make docker:build - Build Docker containers"
-	@echo "  make docker:up    - Start Docker containers"
-	@echo "  make docker:down  - Stop Docker containers"
-	@echo "  make db:migrate   - Run database migrations"
-	@echo "  make db:revert    - Revert last database migration"
+	@echo "  make docker-build - Build Docker containers"
+	@echo "  make docker-up    - Start Docker containers"
+	@echo "  make docker-down  - Stop Docker containers"
+	@echo "  make db-migrate   - Run database migrations"
+	@echo "  make db-revert    - Revert last database migration"
 	@echo "  make clean        - Clean build artifacts"
 	@echo "  make help         - Show this help message" 
