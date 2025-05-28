@@ -1,4 +1,5 @@
-.PHONY: install build start dev test test:watch test:e2e test:cov lint format docker:build docker:up docker:down clean db:migrate db:revert help
+.PHONY: all
+all: help
 
 # Development
 install:
