@@ -21,118 +21,102 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# Lišákův obchod
+# Lisakuv Obchod
 
-A REST API for product inventory management, built with NestJS, TypeORM, and PostgreSQL.
-
-## Purpose
-This project provides a backend for managing products, their prices, and stock, including price history. It is suitable for small shops or as a learning project for RESTful API design.
-
-## Installation & Configuration
-1. Clone the repository.
-2. Copy `.env.example` to `.env` and adjust as needed.
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. (Optional) Use Docker Compose for local development:
-   ```bash
-   docker-compose up --build
-   ```
-
-## Running
-- Locally: `npm run start`
-- In Docker: `docker-compose up --build`
-- API docs: [http://localhost:3000/api](http://localhost:3000/api)
-
-## Security
-- No authentication or authorization is implemented by default. For production, add JWT or OAuth2.
-- Input validation is recommended (see below).
-
-## Input Validation
-- Use `class-validator` and `class-transformer` in DTOs for validating incoming data. See NestJS docs for examples.
-
-## Environment Variables
-- See `.env.example` for all required variables.
-
-## CI/CD
-- Add a `.github/workflows/ci.yml` for GitHub Actions to automate tests and linting.
-
-## Logging & Monitoring
-- Integrate Winston or Sentry for advanced logging and error monitoring.
-
-## License
-MIT (see LICENSE file)
+A modern e-commerce platform built with NestJS.
 
 ## Features
-- Product CRUD (create, read, update, delete)
-- Search products by name
-- Filter products by stock
-- Price change tracking and history
-- OpenAPI (Swagger) documentation
 
-## Setup
+- RESTful API with Swagger documentation
+- Modular architecture
+- TypeORM integration with PostgreSQL
+- JWT authentication
+- Request validation
+- Global exception handling
+- Logging and monitoring
+- Security features (Helmet, CORS, Rate limiting)
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-2. **Configure PostgreSQL:**
-   - Ensure PostgreSQL is running locally with a database named `lisakuv_obchod` and user/password `postgres`/`postgres` (or update `src/app.module.ts` for your setup).
-3. **Run the server:**
-   ```bash
-   npm run start
-   ```
-4. **API documentation:**
-   - Visit [http://localhost:3000/api](http://localhost:3000/api) for Swagger UI and OpenAPI docs.
+## Prerequisites
 
-## Docker
+- Node.js (v16 or higher)
+- PostgreSQL
+- npm or yarn
 
-To run the app and PostgreSQL in Docker:
+## Installation
+
+1. Clone the repository:
 ```bash
-docker-compose up --build
-```
-The API will be available at [http://localhost:3000](http://localhost:3000)
-
-## API Endpoints
-
-### Products
-- `POST /products` — Create a new product
-- `GET /products` — List all products
-- `GET /products/search?name=...` — Search products by name
-- `GET /products/filter?minStock=...` — Filter products by minimum stock
-- `GET /products/:id` — Get a product by ID
-- `PUT /products/:id` — Update a product (tracks price changes)
-- `DELETE /products/:id` — Delete a product
-- `GET /products/:id/price-history` — Get price change history for a product
-
-## Development
-
-### Linting
-```bash
-npm run lint
+git clone https://github.com/yourusername/lisakuv-obchod.git
+cd lisakuv-obchod
 ```
 
-### Testing
+2. Install dependencies:
 ```bash
+npm install
+```
+
+3. Create a `.env` file based on `.env.example`:
+```bash
+cp .env.example .env
+```
+
+4. Update the `.env` file with your configuration.
+
+## Running the application
+
+```bash
+# development
+npm run start
+
+# watch mode
+npm run start:dev
+
+# production mode
+npm run start:prod
+```
+
+## Testing
+
+```bash
+# unit tests
 npm run test
-```
 
-### Code Coverage
-```bash
+# e2e tests
+npm run test:e2e
+
+# test coverage
 npm run test:cov
 ```
 
-## Notes
-- No authentication or UI is included (API only)
-- All code is typed and organized for clarity
+## API Documentation
 
----
-
-Happy coding!
-
-## Project setup
-
-```bash
-$ npm install
+Once the application is running, you can access the Swagger documentation at:
 ```
+http://localhost:3000/api
+```
+
+## Project Structure
+
+```
+src/
+├── config/           # Configuration files
+├── shared/           # Shared modules, filters, interceptors
+├── modules/          # Feature modules
+│   ├── auth/        # Authentication module
+│   ├── users/       # Users module
+│   └── products/    # Products module
+├── main.ts          # Application entry point
+└── app.module.ts    # Root module
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
