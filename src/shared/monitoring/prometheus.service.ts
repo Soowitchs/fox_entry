@@ -11,6 +11,7 @@ export class PrometheusService {
       name: 'http_requests_total',
       help: 'Total number of HTTP requests',
       labelNames: ['method', 'path', 'status'],
+      registers: [this.registry],
     });
 
     this.httpRequestDuration = new Histogram({
@@ -18,10 +19,8 @@ export class PrometheusService {
       help: 'HTTP request duration in seconds',
       labelNames: ['method', 'path'],
       buckets: [0.1, 0.5, 1, 2, 5],
+      registers: [this.registry],
     });
-
-    this.registry.registerMetric(this.httpRequestsTotal);
-    this.registry.registerMetric(this.httpRequestDuration);
   }
 
   incrementHttpRequests(method: string, path: string, status: number) {

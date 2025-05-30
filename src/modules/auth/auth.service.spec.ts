@@ -44,7 +44,7 @@ describe('AuthService', () => {
       };
 
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
 
       const result = await service.validateUser('test@example.com', 'password');
       expect(result).toEqual({
@@ -57,6 +57,20 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(null);
 
       const result = await service.validateUser('test@example.com', 'password');
+      expect(result).toBeNull();
+    });
+
+    it('should return null when password is invalid', async () => {
+      const mockUser = {
+        id: 1,
+        email: 'test@example.com',
+        password: 'hashedPassword',
+      };
+
+      mockUsersService.findByEmail.mockResolvedValue(mockUser);
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(false));
+
+      const result = await service.validateUser('test@example.com', 'wrongpassword');
       expect(result).toBeNull();
     });
   });
