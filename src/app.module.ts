@@ -7,25 +7,35 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { PriceHistory } from './price-history.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ProductsModule } from './products/products.module';
+import { ProductsModule } from './modules/products/products.module';
+import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      useFactory: (configService) => ({
         type: 'postgres',
-        host: config.get<string>('DB_HOST', 'localhost'),
-        port: +config.get<number>('DB_PORT', 5432),
-        username: config.get<string>('DB_USERNAME', 'postgres'),
-        password: config.get<string>('DB_PASSWORD', 'postgres'),
-        database: config.get<string>('DB_DATABASE', 'lisakuv_obchod'),
-        autoLoadEntities: true,
-        synchronize: true,
+        host: configService.get('database.host'),
+        port: configService.get('database.port'),
+        username: configService.get('database.username'),
+        password: configService.get('database.password'),
+        database: configService.get('database.database'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: process.env.NODE_ENV !== 'production',
       }),
+      inject: [ConfigService],
     }),
+    SharedModule,
+    AuthModule,
+    UsersModule,
     ProductsModule,
   ],
   controllers: [AppController],
