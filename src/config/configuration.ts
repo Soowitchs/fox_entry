@@ -1,19 +1,19 @@
 export default () => ({
-  port: parseInt(process.env.PORT, 10) || 3000,
+  port: parseInt(process.env.PORT || '3000', 10) || 3000,
   database: {
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432', 10) || 5432,
+    username: process.env.DB_USERNAME || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'lisakuv_obchod',
   },
   jwt: {
-    secret: process.env.JWT_SECRET,
+    secret: process.env.JWT_SECRET || 'your-secret-key',
     expiresIn: process.env.JWT_EXPIRES_IN || '1d',
   },
   swagger: {
-    title: process.env.SWAGGER_TITLE || 'API Documentation',
-    description: process.env.SWAGGER_DESCRIPTION || 'API documentation for the application',
-    version: process.env.SWAGGER_VERSION || '1.0',
+    title: 'API Documentation',
+    description: 'API documentation for the application',
+    version: '1.0',
   },
-}); 
+});

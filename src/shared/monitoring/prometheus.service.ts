@@ -30,4 +30,4 @@ export class PrometheusService {
   observeHttpRequestDuration(method: string, path: string, duration: number) {
     this.httpRequestDuration.observe({ method, path }, duration);
   }
-} 
+}

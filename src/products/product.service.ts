@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { MoreThan } from 'typeorm';
 import { PriceHistory } from './price-history.entity';
+import { CreateProductDto } from './create-product.dto';
+import { UpdateProductDto } from './update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -14,28 +16,42 @@ export class ProductService {
     private priceHistoryRepository: Repository<PriceHistory>,
   ) {}
 
-  create(product: Partial<Product>) {
-    return this.productRepository.save(product);
-  }
-
   findAll() {
     return this.productRepository.find();
   }
 
   findOne(id: number) {
-    return this.productRepository.findOneBy({ id });
+    return this.productRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, update: Partial<Product>) {
-    const product = await this.productRepository.findOneBy({ id });
+  async create(createProductDto: CreateProductDto) {
+    const product = this.productRepository.create(createProductDto);
+    const savedProduct = await this.productRepository.save(product);
+
+    // Create price history entry
+    const priceHistory = this.priceHistoryRepository.create({
+      product: savedProduct,
+      oldPrice: 0,
+      newPrice: savedProduct.price,
+    });
+    await this.priceHistoryRepository.save(priceHistory);
+
+    return savedProduct;
+  }
+
+  async update(id: number, update: UpdateProductDto) {
+    const product = await this.productRepository.findOne({ where: { id } });
     if (!product) return null;
+
     if (update.price !== undefined && update.price !== product.price) {
-      await this.priceHistoryRepository.save({
+      const priceHistory = this.priceHistoryRepository.create({
         product,
         oldPrice: product.price,
         newPrice: update.price,
       });
+      await this.priceHistoryRepository.save(priceHistory);
     }
+
     return this.productRepository.update(id, update);
   }
 

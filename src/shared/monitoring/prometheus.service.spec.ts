@@ -38,8 +38,8 @@ describe('PrometheusService', () => {
       service.incrementHttpRequests(method, path, status);
 
       const metrics = await registry.getMetricsAsJSON();
-      const counter = metrics.find(m => m.name === 'http_requests_total');
-      
+      const counter = metrics.find((m) => m.name === 'http_requests_total');
+
       expect(counter).toBeDefined();
       expect(counter?.type).toBe('counter');
     });
@@ -54,10 +54,12 @@ describe('PrometheusService', () => {
       service.observeHttpRequestDuration(method, path, duration);
 
       const metrics = await registry.getMetricsAsJSON();
-      const histogram = metrics.find(m => m.name === 'http_request_duration_seconds');
-      
+      const histogram = metrics.find(
+        (m) => m.name === 'http_request_duration_seconds',
+      );
+
       expect(histogram).toBeDefined();
       expect(histogram?.type).toBe('histogram');
     });
   });
-}); 
+});

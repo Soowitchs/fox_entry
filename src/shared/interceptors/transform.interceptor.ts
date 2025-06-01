@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Request } from 'express';
 
 export interface Response<T> {
   data: T;
@@ -22,14 +23,14 @@ export class TransformInterceptor<T>
     next: CallHandler,
   ): Observable<Response<T>> {
     const ctx = context.switchToHttp();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
 
     return next.handle().pipe(
-      map(data => ({
+      map((data: T) => ({
         data,
         timestamp: new Date().toISOString(),
         path: request.url,
       })),
     );
   }
-} 
+}

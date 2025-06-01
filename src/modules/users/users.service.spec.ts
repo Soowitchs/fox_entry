@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { ConflictException, NotFoundException } from '@nestjs/common';
@@ -8,7 +7,6 @@ import * as bcrypt from 'bcrypt';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let repository: Repository<User>;
 
   const mockRepository = {
     create: jest.fn(),
@@ -29,7 +27,6 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    repository = module.get<Repository<User>>(getRepositoryToken(User));
     jest.clearAllMocks();
   });
 
@@ -45,8 +42,15 @@ describe('UsersService', () => {
 
       jest.spyOn(bcrypt, 'hash').mockResolvedValue(hashedPassword as never);
       mockRepository.findOne.mockResolvedValue(null);
-      mockRepository.create.mockReturnValue({ email, password: hashedPassword });
-      mockRepository.save.mockResolvedValue({ id: 1, email, password: hashedPassword });
+      mockRepository.create.mockReturnValue({
+        email,
+        password: hashedPassword,
+      });
+      mockRepository.save.mockResolvedValue({
+        id: 1,
+        email,
+        password: hashedPassword,
+      });
 
       const result = await service.create(email, password);
 
@@ -60,7 +64,9 @@ describe('UsersService', () => {
 
       mockRepository.findOne.mockResolvedValue({ id: 1, email });
 
-      await expect(service.create(email, password)).rejects.toThrow(ConflictException);
+      await expect(service.create(email, password)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 
@@ -130,7 +136,10 @@ describe('UsersService', () => {
 
       jest.spyOn(bcrypt, 'hash').mockResolvedValue(hashedPassword as never);
       mockRepository.findOne.mockResolvedValue(user);
-      mockRepository.save.mockResolvedValue({ ...user, password: hashedPassword });
+      mockRepository.save.mockResolvedValue({
+        ...user,
+        password: hashedPassword,
+      });
 
       const result = await service.update(id, updateData);
 
@@ -144,7 +153,9 @@ describe('UsersService', () => {
 
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.update(id, updateData)).rejects.toThrow(NotFoundException);
+      await expect(service.update(id, updateData)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -169,4 +180,4 @@ describe('UsersService', () => {
       await expect(service.remove(id)).rejects.toThrow(NotFoundException);
     });
   });
-}); 
+});

@@ -33,4 +33,4 @@ import { Registry } from 'prom-client';
   ],
   exports: [PrometheusService],
 })
-export class SharedModule {} 
+export class SharedModule {}

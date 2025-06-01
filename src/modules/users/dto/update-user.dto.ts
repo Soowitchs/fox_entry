@@ -16,4 +16,4 @@ export class UpdateUserDto {
   @ApiProperty({ example: true, required: false })
   @IsOptional()
   isActive?: boolean;
-} 
+}

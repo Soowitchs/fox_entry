@@ -6,7 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let usersService: UsersService;
 
   const mockUsersService = {
     create: jest.fn(),
@@ -27,7 +26,6 @@ describe('UsersController', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-    usersService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -50,7 +48,7 @@ describe('UsersController', () => {
       const result = await controller.create(createUserDto);
 
       expect(result).toEqual(mockUser);
-      expect(usersService.create).toHaveBeenCalledWith(
+      expect(mockUsersService.create).toHaveBeenCalledWith(
         createUserDto.email,
         createUserDto.password,
       );
@@ -70,7 +68,7 @@ describe('UsersController', () => {
       const result = await controller.findOne(id);
 
       expect(result).toEqual(mockUser);
-      expect(usersService.findById).toHaveBeenCalledWith(1);
+      expect(mockUsersService.findById).toHaveBeenCalledWith(1);
     });
   });
 
@@ -90,7 +88,7 @@ describe('UsersController', () => {
       const result = await controller.update(id, updateUserDto);
 
       expect(result).toEqual(mockUser);
-      expect(usersService.update).toHaveBeenCalledWith(1, updateUserDto);
+      expect(mockUsersService.update).toHaveBeenCalledWith(1, updateUserDto);
     });
   });
 
@@ -102,7 +100,7 @@ describe('UsersController', () => {
 
       await controller.remove(id);
 
-      expect(usersService.remove).toHaveBeenCalledWith(1);
+      expect(mockUsersService.remove).toHaveBeenCalledWith(1);
     });
   });
-}); 
+});

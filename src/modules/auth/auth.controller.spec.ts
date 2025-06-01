@@ -1,11 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let authService: AuthService;
 
   const mockAuthService = {
     login: jest.fn(),
@@ -23,7 +21,6 @@ describe('AuthController', () => {
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
-    authService = module.get<AuthService>(AuthService);
   });
 
   it('should be defined', () => {
@@ -31,26 +28,19 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
-    it('should return access token', async () => {
-      const loginDto: LoginDto = {
-        email: 'test@example.com',
-        password: 'password123',
-      };
+    it('should return access token', () => {
       const mockUser = {
         id: 1,
-        email: loginDto.email,
+        email: 'test@example.com',
       };
-      const mockResponse = {
-        access_token: 'jwt-token',
-      };
+      const mockToken = { access_token: 'test-token' };
 
-      const req = { user: mockUser };
-      mockAuthService.login.mockResolvedValue(mockResponse);
+      mockAuthService.login.mockReturnValue(mockToken);
 
-      const result = await controller.login(req, loginDto);
+      const result = controller.login({ user: mockUser });
 
-      expect(result).toEqual(mockResponse);
-      expect(authService.login).toHaveBeenCalledWith(mockUser);
+      expect(result).toEqual(mockToken);
+      expect(mockAuthService.login).toHaveBeenCalledWith(mockUser);
     });
   });
-}); 
+});

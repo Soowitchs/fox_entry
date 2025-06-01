@@ -3,28 +3,39 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  Logger,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(LoggingInterceptor.name);
-
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
-    const { method, url, body } = request;
+    const httpContext = context.switchToHttp();
+    if (!httpContext) {
+      return next.handle();
+    }
+
+    const request = httpContext.getRequest();
+    const response = httpContext.getResponse();
+    const { method, url } = request;
     const now = Date.now();
 
     return next.handle().pipe(
-      tap(() => {
-        const response = context.switchToHttp().getResponse();
-        const delay = Date.now() - now;
-        this.logger.log(
-          `${method} ${url} ${response.statusCode} - ${delay}ms`,
-        );
+      tap({
+        next: () => {
+          const responseTime = Date.now() - now;
+          console.log(
+            `[LoggingInterceptor] ${method} ${url} ${response.statusCode} - ${responseTime}ms`,
+          );
+        },
+        error: (error) => {
+          const responseTime = Date.now() - now;
+          console.log(
+            `[LoggingInterceptor] ${method} ${url} Error - ${responseTime}ms`,
+          );
+          console.error(error);
+        },
       }),
     );
   }
-} 
+}

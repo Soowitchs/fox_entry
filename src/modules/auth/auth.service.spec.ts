@@ -6,8 +6,6 @@ import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersService: UsersService;
-  let jwtService: JwtService;
 
   const mockUsersService = {
     findByEmail: jest.fn(),
@@ -27,8 +25,6 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    usersService = module.get<UsersService>(UsersService);
-    jwtService = module.get<JwtService>(JwtService);
   });
 
   it('should be defined', () => {
@@ -44,7 +40,7 @@ describe('AuthService', () => {
       };
 
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as unknown as never);
 
       const result = await service.validateUser('test@example.com', 'password');
       expect(result).toEqual({
@@ -68,15 +64,20 @@ describe('AuthService', () => {
       };
 
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(false));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockResolvedValue(false as unknown as never);
 
-      const result = await service.validateUser('test@example.com', 'wrongpassword');
+      const result = await service.validateUser(
+        'test@example.com',
+        'wrongpassword',
+      );
       expect(result).toBeNull();
     });
   });
 
   describe('login', () => {
-    it('should return JWT token', async () => {
+    it('should return JWT token', () => {
       const mockUser = {
         id: 1,
         email: 'test@example.com',
@@ -85,10 +86,10 @@ describe('AuthService', () => {
       const mockToken = 'jwt-token';
       mockJwtService.sign.mockReturnValue(mockToken);
 
-      const result = await service.login(mockUser);
+      const result = service.login(mockUser);
       expect(result).toEqual({
         access_token: mockToken,
       });
     });
   });
-}); 
+});

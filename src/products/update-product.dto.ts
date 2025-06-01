@@ -14,4 +14,4 @@ export class UpdateProductDto {
   @Min(0)
   @IsOptional()
   stock?: number;
-} 
+}
